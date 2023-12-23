@@ -1,9 +1,9 @@
 # Disc-type glass insulators absence detection
 
-Team members: Edgar Kaziakhmedov, Denis Koposov
+Team members: Edgar Kaziakhmedov, Denis Koposov  
 Team name: NeuroEye
 
-Source code containing part for data manipulation is in **scripts** folder.
+Source code containing part for data manipulation is in **scripts** folder.  
 Part used for Yolov8x training is in **network** folder.
 
 ## Preface and objective
