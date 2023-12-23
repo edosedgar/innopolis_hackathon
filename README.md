@@ -1,14 +1,14 @@
-# Disc-type glass insulators absence detection (NeuroEye)
+# Disc-type glass insulators absence detection
 
 Team members: Edgar Kaziakhmedov, Denis Koposov
+Team name: NeuroEye
 
-Source code containing part for data manipulation in **scripts** fodler.
-
+Source code containing part for data manipulation is in **scripts** folder.
 Part used for Yolov8x training is in **network** folder.
 
 ## Preface and objective
 
-The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create algorithms capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.
+The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create an algorithm capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.
 
 ## Approach
 
