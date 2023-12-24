@@ -36,8 +36,11 @@ def parse_args():
     parser.add_argument('--device', type=str, default='0')
     parser.add_argument('--output_dir', type=str, default='predictions',
                         help='')
+    parser.add_argument('--filtering', type=str, default='nmm')
+    parser.add_argument('--filt_meas', type=str, default='ios')
     parser.add_argument('--overconfident', action='store_true',
                         help='')
+    parser.add_argument('--nmm_shrink', type=float, default=0.0)
     parser.add_argument('--sliced', action='store_true',
                         help='')
     parser.add_argument('--slice_overlap', type=float, default=0.2,
@@ -59,11 +62,8 @@ def parse_args():
     return args
 
 
-def inference(args):
+def inference(name, args):
     model = YOLO(model=args.weights, task='detect')
-
-    test_data_name = os.path.basename(args.test_data.rstrip('/'))
-    name = f'{args.model}_{test_data_name}_r{args.imgsz}_t{args.conf}'
 
     ## ultralytics library appends to txt, instead of overwriting
     if os.path.isdir(f'{args.output_dir}/{name}/labels/'):
@@ -100,7 +100,7 @@ def inference(args):
     return results
 
 
-def inference_sliced(args):
+def inference_sliced(name, args):
     device = args.device
     detection_model = AutoDetectionModel.from_pretrained(
         model_type="yolov8",
@@ -110,15 +110,19 @@ def inference_sliced(args):
         confidence_threshold=args.conf,
     )
 
-    test_data_name = os.path.basename(args.test_data.rstrip('/'))
-    name = f'{args.model}_{test_data_name}_r{args.imgsz}_t{args.conf}_sliced'
     results = sahi_predict(
         source=args.test_data,
         project=args.output_dir,
         name=name,
 
-        postprocess_match_metric="IOU",
-        # postprocess_match_metric="IOS",
+        postprocess_type={
+            "nmm": "GREEDYNMM",
+            "nms": "NMS",
+        }[args.filtering.lower()],
+        postprocess_match_metric={
+            "ios": "IOS",
+            "iou": "IOU"
+        }[args.filt_meas.lower()],
         postprocess_match_threshold=args.iou,
 
         detection_model=detection_model,
@@ -164,6 +168,9 @@ def inference_sliced(args):
                 x += w / 2
                 y += h / 2
                 prob = pred.score.value
+                if args.filtering == 'nmm':
+                    w *= (1.0 - args.nmm_shrink)
+                    h *= (1.0 - args.nmm_shrink)
                 data = [0, x / W, y / H, w / W, h / H, prob]
                 print(
                     ("\n" if i != 0 else "") + " ".join(map(str, data)),
@@ -200,10 +207,23 @@ if __name__ == "__main__":
     args = parse_args()
 
     # run inference
+    test_data_name = os.path.basename(args.test_data.rstrip('/'))
+    overconf = "_overconf" if args.overconfident else ""
+    sliced = "_sliced" if args.sliced else ""
+    filtering = "nms" if not args.sliced else args.filtering
+    filt_meas = "iou" if not args.sliced else args.filt_meas
+    name = os.path.basename(
+        os.path.abspath(
+            os.path.join(os.path.dirname(args.weights), '..')
+        )
+    )
+    name += f'_r{args.imgsz}'
+    name += f'_{args.filtering}-{filt_meas}{args.iou}'
+    name += f'_t{args.conf}{overconf}{sliced}'
     if args.sliced:
-        results = inference_sliced(args)
+        results = inference_sliced(name, args)
     else:
-        results = inference(args)
+        results = inference(name, args)
 
     # create submission a file
     submission_path = save_submission(results, args, target_csv=args.target_csv)
