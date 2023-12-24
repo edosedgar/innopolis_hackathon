@@ -5,12 +5,25 @@ import argparse
 class Config:
     # models params
     model = 'yolov8x'
-    weights = os.path.join('models', 'best.pt')
+    weights = os.path.join(
+        'models', 'yolov8x_best',
+        'weights', 'model.pt'
+    )
 
     # inference params
-    iou = 0.5
-    conf = 0.5
+    iou = 0.7
+    conf = 0.7
     imgsz = 4000
+
+    # sliced inference
+    sliced = True
+    slice_size = 640
+    nmm_shrink = 0.1
+    filtering = 'nmm' # non-max merging
+    filt_meas = 'ios' # intersection over smaller area
+
+    # leaderboard tricks
+    overconfident = False
 
     # run params
     device = 0
@@ -26,21 +39,22 @@ def parse_args():
 
 def main():
     args = parse_args()
-    cmd = f"""
-      python infer_yolo.py \
-        {Config.model} \
-        {Config.weights} \
-        {args.data_dir} \
-        --target_csv='~/datasets/test_public_v2/manual.csv' \
-        --csv_dir=./submissions/ \
-        --output_dir=./predictions/ \
-        --iou={Config.iou} --conf={Config.conf} --imgsz={Config.imgsz} \
-        --device=0 \
-        --overconfident \
-        --compute_score \
-        --sliced \
-        --slice_size=640 \
-    """
+    cmd = (
+        "python infer_yolo.py "
+        f"{Config.model} "
+        f"{Config.weights} "
+        f"{args.data_dir} "
+        f"--csv_dir=submissions "
+        f"--output_dir=predictions "
+        "--target_csv='' "
+        f"--iou={Config.iou} --conf={Config.conf} --imgsz={Config.imgsz} "
+        f"--device={Config.device} "
+    )
+    if Config.sliced:
+        cmd += f"--filtering={Config.filtering} --filt_meas={Config.filt_meas} "
+        cmd += f"--sliced --slice_size={Config.slice_size} --nmm_shrink={Config.nmm_shrink} "
+    if Config.overconfident:
+        cmd += "--overconfident "
     os.system(cmd)
 
 

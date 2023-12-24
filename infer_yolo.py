@@ -3,18 +3,17 @@ warnings.filterwarnings("ignore")
 
 import os
 import pickle
+import shutil
 import argparse
 import pandas as pd
 from PIL import Image
-
-import torch
 
 from ultralytics import YOLO
 from sahi import AutoDetectionModel
 from sahi.predict import predict as sahi_predict
 
 from src.metrics.compute_map import score
-from src.utils.submit import parse_labels_v3
+from src.utils.submit import labels_to_submission
 
 
 def parse_args():
@@ -101,6 +100,11 @@ def inference(name, args):
 
 
 def inference_sliced(name, args):
+    run_dir = os.path.join(args.output_dir, name)
+    print(run_dir)
+    if os.path.exists(run_dir):
+        shutil.rmtree(run_dir)
+
     device = args.device
     detection_model = AutoDetectionModel.from_pretrained(
         model_type="yolov8",
@@ -181,25 +185,24 @@ def inference_sliced(name, args):
     return results
 
 
-def save_submission(results, args, target_csv=None):
+def save_submission(name, results, args, target_csv=''):
     save_dir = results[0].save_dir
-    print(save_dir)
+    print(f"Submission saved to {save_dir}")
 
-    df = parse_labels_v3(
+    df = labels_to_submission(
         save_dir, overconfident=args.overconfident,
         target_csv=target_csv
     )
     print(df.head())
 
     # save submission
-    name = os.path.basename(save_dir.rstrip('/'))
-    if args.sliced:
-        name += f"_sliced{args.slice_size}"
-    submission_path = os.path.join(args.csv_dir, 'NeuroEye.csv')
+    test_data_name = os.path.basename(args.test_data.rstrip('/'))
+    final_dir = os.path.join(args.csv_dir, test_data_name)
+    submission_path = os.path.join(final_dir, 'NeuroEye.csv')
 
-    os.makedirs(args.csv_dir, exist_ok=True)
-    df.to_csv(os.path.join(args.csv_dir, f'{name}.csv'), index=False)
-    df.to_csv(os.path.join(args.csv_dir, 'NeuroEye.csv'), index=False)
+    os.makedirs(final_dir, exist_ok=True)
+    df.to_csv(os.path.join(final_dir, f'{name}.csv'), index=False)
+    df.to_csv(os.path.join(final_dir, 'NeuroEye.csv'), index=False)
     return submission_path
 
 
@@ -207,9 +210,8 @@ if __name__ == "__main__":
     args = parse_args()
 
     # run inference
-    test_data_name = os.path.basename(args.test_data.rstrip('/'))
     overconf = "_overconf" if args.overconfident else ""
-    sliced = "_sliced" if args.sliced else ""
+    sliced = f"_sliced{args.slice_size}" if args.sliced else ""
     filtering = "nms" if not args.sliced else args.filtering
     filt_meas = "iou" if not args.sliced else args.filt_meas
     name = os.path.basename(
@@ -226,7 +228,9 @@ if __name__ == "__main__":
         results = inference(name, args)
 
     # create submission a file
-    submission_path = save_submission(results, args, target_csv=args.target_csv)
+    submission_path = save_submission(
+        name, results, args, target_csv=args.target_csv
+    )
 
     # compute approximate score
     if args.compute_score:
