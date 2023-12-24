@@ -110,8 +110,9 @@ def parse_labels_v3(data_dir, overconfident=False, target_csv=None):
         # for i in range(len(lines)):
         #     lines[i][0] = lines[i][0]
         #     lines[i][1] = lines[i][1]
-        if len(boxes) == 0:
-            continue
+        if len(boxes) == 0: # Edgar: dont continue, add zeros
+            boxes = [[0, 0, 0, 0]]
+            probs = [0]
         df.loc[len(df)] = [filename, boxes, probs]
 
     # df.to_csv("NeuroEye.csv", index=False)
