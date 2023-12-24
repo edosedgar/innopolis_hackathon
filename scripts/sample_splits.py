@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 ##################### CONFIG 
 
-DST_DS = 'complete_ds/v1'
+DST_DS = 'complete_ds/v2'
 TRN = 0.8
 rs = np.random.RandomState(seed=1996)
 
@@ -18,7 +18,10 @@ sources = [
     'clean_ds/defect_ninja640',
     'clean_ds/imagestocks640',
     'clean_ds/innopolis640',
-    'clean_ds/su110kv_broken640'
+    'clean_ds/su110kv_broken640',
+    'clean_ds/dolgoprudny_640',
+    'clean_ds/web_crawl640',
+    'clean_ds/mitino_live640'
 ]
 
 ##################### 
@@ -38,8 +41,10 @@ os.makedirs(f'{DST_DS}/train/labels', exist_ok=True)
 for train_file in train_files:
     filename = train_file.split('/')[-1][:-4]
     shutil.copy(train_file, f'{DST_DS}/train/images/{filename}.jpg')
-    shutil.copy('/'.join(train_file.split('/')[:-2]) + '/labels/' + filename + '.txt',\
-                f'{DST_DS}/train/labels/{filename}.txt')
+    # dont copy for bg images
+    if os.path.isfile('/'.join(train_file.split('/')[:-2]) + '/labels/' + filename + '.txt'):
+        shutil.copy('/'.join(train_file.split('/')[:-2]) + '/labels/' + filename + '.txt',\
+                    f'{DST_DS}/train/labels/{filename}.txt')
     
 # copy valid files
 os.makedirs(f'{DST_DS}/valid/images', exist_ok=True)
@@ -47,5 +52,7 @@ os.makedirs(f'{DST_DS}/valid/labels', exist_ok=True)
 for valid_file in valid_files:
     filename = valid_file.split('/')[-1][:-4]
     shutil.copy(valid_file, f'{DST_DS}/valid/images/{filename}.jpg')
-    shutil.copy('/'.join(valid_file.split('/')[:-2]) + '/labels/' + filename + '.txt',\
-                f'{DST_DS}/valid/labels/{filename}.txt')
+    # dont copy for bg images
+    if os.path.isfile('/'.join(valid_file.split('/')[:-2]) + '/labels/' + filename + '.txt'):
+        shutil.copy('/'.join(valid_file.split('/')[:-2]) + '/labels/' + filename + '.txt',\
+                    f'{DST_DS}/valid/labels/{filename}.txt')
