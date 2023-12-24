@@ -2,6 +2,7 @@
 runs/
 results/
 predictions/
+submissions/
 *.pt
 
 # Byte-compiled / optimized / DLL files
