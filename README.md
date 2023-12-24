@@ -5,6 +5,28 @@ Team name: NeuroEye
 
 Source code containing part for data manipulation is in **scripts** folder.  
 
+### Virtual environment and package dependencies
+
+Install virtuenv package for python:
+```sh
+pip3 install virtualenv
+```
+
+Create new virtual environment and activate it:
+```sh
+python3 -m venv ~/kaggle_env
+. ~/kaggle_env/bin/activate
+```
+
+Install required python packages:
+```sh
+pip3 install -r requirements.txt
+```
+
+### Model weights
+
+[Download](https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQC2RS2wiYdlCJ3f/view?usp=sharing) model weights from Google Drive and move the unzipped folder to the same directory where your source code is located.
+
 ## Preface and objective
 
 The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create an algorithm capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.
