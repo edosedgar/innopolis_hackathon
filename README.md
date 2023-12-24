@@ -1,9 +1,9 @@
 # Disc-type glass insulators absence detection
 
-Team members: Edgar Kaziakhmedov, Denis Koposov  
 Team name: NeuroEye
+Team members: Edgar Kaziakhmedov, Denis Koposov  
 
-## Preface
+## Introduction
 
 The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create an algorithm capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.
 
@@ -27,7 +27,7 @@ pip3 install -r requirements.txt
 
 ## Model weights
 
-Download [the model weights]((https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQC2RS2wiYdlCJ3f/view?usp=sharing)) from Google Drive and move the unzipped folder **models** to the same directory as your source code.
+Download [the model weights](https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQC2RS2wiYdlCJ3f/view?usp=sharing) from Google Drive and move the unzipped folder **models** to the same directory as your source code.
 
 ## Solution
 
