@@ -61,7 +61,7 @@ def transform_labels(x1, x2, y1, y2, labels, img_w, img_h, is_visited):
         box_y1, box_y2 = (label[1] - label[3]/2)*img_h, (label[1] + label[3]/2)*img_h
 
         # skip if label is outside selected window/slice
-        if box_x1 >= x2 or box_x2 <= x1 or box_y1 >= y2 or box_y2 <= y1: 
+        if box_x1 >= x2 or box_x2 <= x1 or box_y1 >= y2 or box_y2 <= y1:
             continue
 
         new_box_x1, new_box_x2 = max(0, box_x1 - x1), min(slice_w, box_x2 - x1)
@@ -97,7 +97,7 @@ for file in tqdm(src_labels):
     else:
         print("Error reading file")
         sys.exit(1)
-            
+
     img_h, img_w, _ = img.shape
 
     with open(file) as f:
@@ -114,11 +114,11 @@ for file in tqdm(src_labels):
         cur_tile_size = min(TILE_SIZE, min(img_h, img_w))
         x1, x2, y1, y2 = sample_slice_position(rs, x_c, y_c, cur_tile_size, cur_tile_size,\
                                                img_w, img_h, random_offset=OFFSET)
-        
+
         img_window = img[y1:y2,x1:x2]
         img_window = cv2.resize(img_window, (FINAL_SIZE, FINAL_SIZE), interpolation = cv2.INTER_AREA)
         cv2.imwrite(f'{DST_DS}/images/{filename}_{i}.JPG', img_window)
-    
+
         with open(f'{DST_DS}/labels/{filename}_{i}.txt', 'w+') as f:
             new_labels = transform_labels(x1, x2, y1, y2, lines, img_w, img_h, is_visited)
             for new_label in new_labels:

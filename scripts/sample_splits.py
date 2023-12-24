@@ -7,7 +7,7 @@ import numpy as np
 import shutil
 from tqdm import tqdm
 
-##################### CONFIG 
+##################### CONFIG
 
 DST_DS = 'complete_ds/v2'
 TRN = 0.8
@@ -24,7 +24,7 @@ sources = [
     'clean_ds/mitino_live640'
 ]
 
-##################### 
+#####################
 
 file_pool = []
 for source in sources:
@@ -45,7 +45,7 @@ for train_file in train_files:
     if os.path.isfile('/'.join(train_file.split('/')[:-2]) + '/labels/' + filename + '.txt'):
         shutil.copy('/'.join(train_file.split('/')[:-2]) + '/labels/' + filename + '.txt',\
                     f'{DST_DS}/train/labels/{filename}.txt')
-    
+
 # copy valid files
 os.makedirs(f'{DST_DS}/valid/images', exist_ok=True)
 os.makedirs(f'{DST_DS}/valid/labels', exist_ok=True)

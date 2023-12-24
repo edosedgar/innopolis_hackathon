@@ -1,6 +1,7 @@
-import pandas as pd
 import sys
 import numpy as np
+import pandas as pd
+
 
 def parse(string):
     if type(string) == type("string"):
@@ -13,8 +14,8 @@ def parse(string):
     else:
         return string
 
+
 def calculate_iou(boxA, boxB):
-   
     xA, yA, wA, hA = boxA
     xB, yB, wB, hB = boxB
 
@@ -41,6 +42,7 @@ def fill_rbbox(x):
     else:
         return x
 
+
 def parse_bbox(string):
     string = str(string).strip("[").strip("]").split(", ")
     counter = 0
@@ -53,6 +55,7 @@ def parse_bbox(string):
             answer[-1].append(float(x.strip("[").strip("]")))
         counter+=1
     return answer
+
 
 def compute_ap(recall, precision):
     """ Compute the average precision, given the recall and precision curves
@@ -80,7 +83,7 @@ def compute_ap(recall, precision):
         ap = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])  # area under curve
 
     return ap
-    
+
 
 def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: str) -> float:
     '''
@@ -97,13 +100,13 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
     submission["probability"] = submission["probability"].apply(lambda x: x[0])
     solution = solution.set_index(row_id_column_name)
     solution["bbox"] = solution["bbox"].apply(parse_bbox)
-    
+
     total_gt_boxes = solution['bbox'].apply(lambda x: len(x)).sum()
 
     h = 0.01
     all_precisions = []
     all_recalls = []
- 
+
     for i in range(1,100):
         local_submission = submission[submission["probability"].apply(lambda x: any(float(val) > h * i for val in x))].copy()
         del local_submission["probability"]
@@ -122,9 +125,9 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
                 max_iou = max(ious) if ious else 0
                 iou_list_per_row.append(max_iou)
             iou_list.append(iou_list_per_row)
-    
+
         df['iou_list'] = iou_list
-        
+
         df['true_positives'] = df['iou_list'].apply(lambda iou_list: sum(iou > 0.5 for iou in iou_list))
         true_positives = df["true_positives"].sum()
         all_positives = local_submission['rbbox'].apply(lambda x: len(x)).sum()
@@ -141,7 +144,7 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
 
         all_precisions.append(precision)
         all_recalls.append(recall)
-    
+
     mAP = compute_ap(all_recalls, all_precisions)
     return mAP
 
