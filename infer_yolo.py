@@ -2,11 +2,10 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import os
-import glob
 import pickle
 import argparse
 import pandas as pd
-import shutil
+from PIL import Image
 
 import torch
 
@@ -34,7 +33,7 @@ def parse_args():
                         help='')
     parser.add_argument('--imgsz', type=int, default=4000,
                         help='')
-    parser.add_argument('--device', type=int, default=0)
+    parser.add_argument('--device', type=str, default='0')
     parser.add_argument('--output_dir', type=str, default='predictions',
                         help='')
     parser.add_argument('--overconfident', action='store_true',
@@ -48,17 +47,17 @@ def parse_args():
     parser.add_argument('--target_csv', type=str,
                         default='~/datasets/test_public_v2/manual.csv',
                         help='')
-    
+
     args = parser.parse_args()
-    
+    if args.device.lower() in ['', 'cpu']:
+        args.device = 'cpu'
+    else:
+        args.device = int(args.device)
+
     return args
 
 
 def inference(args):
-    device = (
-        f"cuda:{args.device}" if torch.cuda.is_available()
-        else "cpu"
-    )
     model = YOLO(model=args.weights, task='detect')
 
     test_data_name = os.path.basename(args.test_data.rstrip('/'))
@@ -83,7 +82,7 @@ def inference(args):
         imgsz=args.imgsz,
         rect=True,
 
-        device=[device],
+        device=args.device,
 
         # visualization
         show_labels=False,
@@ -100,10 +99,7 @@ def inference(args):
 
 
 def inference_sliced(args):
-    device = (
-        f"cuda:{args.device}" if torch.cuda.is_available()
-        else "cpu"
-    )
+    device = args.device
     detection_model = AutoDetectionModel.from_pretrained(
         model_type="yolov8",
         model_path=args.weights,
@@ -129,14 +125,14 @@ def inference_sliced(args):
         slice_width=args.slice_size,
         overlap_height_ratio=0.2,
         overlap_width_ratio=0.2,
-        
+
         # visualization
         novisual=False,
         visual_hide_conf=False,
         visual_hide_labels=True,
         visual_export_format='jpg',
         visual_bbox_thickness=1,
-        
+
         # other
         verbose=1,
         export_pickle=True,
@@ -146,6 +142,7 @@ def inference_sliced(args):
     save_dir = results['export_dir']
     # convert pickle to the dir with labels
     labels_dir = os.path.join(save_dir, 'labels')
+    images_dir = os.path.join(save_dir, 'visuals')
     pickle_dir = os.path.join(save_dir, 'pickles')
     os.makedirs(labels_dir, exist_ok=True)
 
@@ -153,12 +150,14 @@ def inference_sliced(args):
         name = os.path.splitext(pkl_name)[0]
         p_path = os.path.join(pickle_dir, pkl_name)
         l_path = os.path.join(labels_dir, name + '.txt')
+        i_path = os.path.join(images_dir, name + '.jpg')
         with open(p_path, "rb") as f:
             obj_list = pickle.load(f)
 
         with open(l_path, "w") as f:
             for i, pred in enumerate(obj_list):
-                W, H = 4000, 2250 # TODO
+                pil_img = Image.open(i_path)
+                W, H = pil_img.size
                 x, y, w, h = pred.bbox.to_xywh()
                 x += w / 2
                 y += h / 2
@@ -178,7 +177,7 @@ def save_submission(results, args, target_csv=None):
     print(save_dir)
 
     df = parse_labels_v3(
-        save_dir, overconfident=True,
+        save_dir, overconfident=args.overconfident,
         target_csv=target_csv
     )
     print(df.head())
