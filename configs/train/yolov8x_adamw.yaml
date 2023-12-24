@@ -1,0 +1,40 @@
+# model params
+base_model: yolov8x # yolov8n, yolov8s, yolov8m, yolov8l, yolov8x
+base_model_weights: yolov8x.pt
+
+# training
+train_params:
+  batch: 16
+  nbs: 64 # with gradient accumulation (nominal batch size)
+  epochs: 100
+  patience: 20
+  warmup_epochs: 3.0
+
+  # other
+  seed: 123
+
+  # extra regularization
+  dropout: 0.0
+  label_smoothing: 0.0
+
+  # optimizer
+  optimizer: AdamW # auto
+  lr0: 1.0e-3 # initial LR
+  lrf: 0.01   # min LR multiplier
+  momentum: 0.9
+  weight_decay: 5.0e-4
+
+  # augmentations (defaults)
+  hsv_h: 0.015  # (float) image HSV-Hue augmentation (fraction)
+  hsv_s: 0.7  # (float) image HSV-Saturation augmentation (fraction)
+  hsv_v: 0.4  # (float) image HSV-Value augmentation (fraction)
+  degrees: 0.0  # (float) image rotation (+/- deg)
+  translate: 0.1  # (float) image translation (+/- fraction)
+  scale: 0.5  # (float) image scale (+/- gain)
+  shear: 0.0  # (float) image shear (+/- deg)
+  perspective: 0.0  # (float) image perspective (+/- fraction), range 0-0.001
+  flipud: 0.0  # (float) image flip up-down (probability)
+  fliplr: 0.5  # (float) image flip left-right (probability)
+  mosaic: 1.0  # (float) image mosaic (probability)
+  mixup: 0.0  # (float) image mixup (probability)
+  copy_paste: 0.0  # (float) segment copy-paste (probability)

@@ -1,87 +1,71 @@
-import ultralytics
-print(ultralytics.__version__)
-
 import warnings
 warnings.filterwarnings("ignore")
 
 import os
-import numpy as np
-import pandas as pd
 import yaml
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
+import argparse
+from easydict import EasyDict
+
 from ultralytics import YOLO
 
-class CFG:
-    DEBUG = False
-    FRACTION = 1.0
-    SEED = 1996
-    DATA_VERSION = 2
 
-    # classes
-    CLASSES = ['0']
-    NUM_CLASSES_TO_TRAIN = len(CLASSES)
-
-    # training
-    EPOCHS = 100
-    BATCH_SIZE = 16
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config', type=str, help='')
+    parser.add_argument('data_config', type=str, help='')
+    parser.add_argument('--output_dir', type=str, default='runs',
+                        help='')
+    parser.add_argument('--imgsz', type=int, default=640,
+                        help='')
+    parser.add_argument('--amp', type=int, default=1)
     
-    BASE_MODEL = 'yolov8x' # yolov8n, yolov8s, yolov8m, yolov8l, yolov8x
-    BASE_MODEL_WEIGHTS = f'{BASE_MODEL}.pt'
-    EXP_NAME = f'insulators_{EPOCHS}_ep_{DATA_VERSION}_ds_version'
-    
-    OPTIMIZER = 'auto' # SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto
-    LR = 1e-3
-    LR_FACTOR = 0.01
-    WEIGHT_DECAY = 5e-4
-    DROPOUT = 0.0
-    PATIENCE = 20
-    PROFILE = False
-    LABEL_SMOOTHING = 0.0    
+    args = parser.parse_args()
+    return args
 
-    # paths
-    CUSTOM_DATASET_DIR = '/home/ekaziak1/datasets/complete_ds/v1/'
-    OUTPUT_DIR = './log_dir/'
 
-dict_file = {
-    'train': os.path.join(CFG.CUSTOM_DATASET_DIR, 'train'),
-    'val': os.path.join(CFG.CUSTOM_DATASET_DIR, 'valid'),
-    'test': os.path.join(CFG.CUSTOM_DATASET_DIR, 'test'),
-    'nc': CFG.NUM_CLASSES_TO_TRAIN,
-    'names': CFG.CLASSES
-    }
+def train(args):
+    # load configs
+    with open(args.config, 'r') as f:
+        cfg = yaml.safe_load(f)
+    with open(args.data_config, 'r') as f:
+        data_cfg = yaml.safe_load(f)
+    cfg = EasyDict(cfg)
+    data_cfg = EasyDict(data_cfg)
+    print('Model: ', cfg.base_model_weights)
+    print('Epochs: ', cfg.train_params.epochs)
+    print('Batch / Full batch: ', cfg.train_params.batch, '/', cfg.train_params.nbs)
 
-with open(os.path.join(CFG.OUTPUT_DIR, 'data.yaml'), 'w+') as file:
-    yaml.dump(dict_file, file)
+    # initialize mode
+    model = YOLO(cfg.base_model_weights)
 
-model = YOLO(CFG.BASE_MODEL_WEIGHTS)
+    # run training
+    test_data_name = os.path.splitext(os.path.basename(args.data_config))[0]
+    name = os.path.splitext(os.path.basename(args.config))[0]
+    name += f"_{test_data_name}"
+    name += f"_r{args.imgsz}"
+    model.train(
+        data=args.data_config,
 
-model.train(
-    data = os.path.join(CFG.OUTPUT_DIR, 'data.yaml'),
+        task='detect',
+        imgsz=args.imgsz,
+        fraction=1.0,
 
-    task = 'detect',
+        project=args.output_dir,
+        name=name,
 
-    imgsz = (640, 640),
+        val=True,
+        amp=bool(args.amp),    
+        exist_ok=True,
+        resume=False,
+        device=0,
+        verbose=False,
+        
+        # training params from the config
+        **cfg.train_params
+    )
+    print("Finished")
 
-    epochs = CFG.EPOCHS,
-    batch = CFG.BATCH_SIZE,
-    optimizer = CFG.OPTIMIZER,
-    lr0 = CFG.LR,
-    lrf = CFG.LR_FACTOR,
-    weight_decay = CFG.WEIGHT_DECAY,
-    dropout = CFG.DROPOUT,
-    fraction = CFG.FRACTION,
-    patience = CFG.PATIENCE,
-    profile = CFG.PROFILE,
-    label_smoothing = CFG.LABEL_SMOOTHING,
 
-    name = f'{CFG.BASE_MODEL}_{CFG.EXP_NAME}',
-    seed = CFG.SEED,
-    
-    val = True,
-    amp = True,    
-    exist_ok = True,
-    resume = False,
-    device = 0,
-    verbose = False,
-)
+if __name__ == "__main__":
+    args = parse_args()
+    train(args)
