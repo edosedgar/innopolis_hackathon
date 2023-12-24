@@ -1,0 +1,7 @@
+easydict
+numpy
+pandas
+torch
+torchvision
+ultralytics
+sahi

@@ -1,6 +1,7 @@
 # custom dirs
 runs/
 results/
+predictions/
 *.pt
 
 # Byte-compiled / optimized / DLL files
