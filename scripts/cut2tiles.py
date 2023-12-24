@@ -6,11 +6,11 @@ import sys, os
 import numpy as np
 from tqdm import tqdm
 
-SRC_DS_labels = 'downloaded_datasets/imagestocks/labels'
-SRC_DS_images = 'downloaded_datasets/imagestocks/images'
-DST_DS = 'downloaded_datasets/imagestocks640'
-OFFSET = 50
-TILE_SIZE = 1500
+SRC_DS_labels = './downloaded_datasets/mitino_live/labels'
+SRC_DS_images = './downloaded_datasets/mitino_live/images'
+DST_DS = './downloaded_datasets/mitino_live640'
+OFFSET = 10
+TILE_SIZE = 960
 FINAL_SIZE = 640
 
 # SRC_DS_labels = 'downloaded_datasets/broken-glass-insulator.v9i.yolov8/labels'
@@ -52,11 +52,11 @@ def sample_slice_position(rs, orig_x, orig_y, slice_width, slice_height, img_w, 
     return x1, x2, y1, y2
 
 ## transform label coordinates
-def transform_labels(x1, x2, y1, y2, labels, img_w, img_h):
+def transform_labels(x1, x2, y1, y2, labels, img_w, img_h, is_visited):
     new_labels = []
     slice_w, slice_h = x2-x1, y2-y1
 
-    for label in labels:
+    for lbl_pos, label in enumerate(labels):
         box_x1, box_x2 = (label[0] - label[2]/2)*img_w, (label[0] + label[2]/2)*img_w
         box_y1, box_y2 = (label[1] - label[3]/2)*img_h, (label[1] + label[3]/2)*img_h
 
@@ -71,6 +71,7 @@ def transform_labels(x1, x2, y1, y2, labels, img_w, img_h):
         if new_box_x2 - new_box_x1 < (box_x2 - box_x1)/2 or new_box_y2 - new_box_y1 < (box_y2 - box_y1)/2:
             continue
 
+        is_visited[lbl_pos] = 1
         new_box_cx, new_box_cy = (new_box_x1 + new_box_x2)/2/slice_w, (new_box_y1 + new_box_y2)/2/slice_h
         new_box_w, new_box_h = (new_box_x2 - new_box_x1)/slice_w, (new_box_y2 - new_box_y1)/slice_h
         new_labels.append([new_box_cx, new_box_cy, new_box_w, new_box_h])
@@ -85,10 +86,18 @@ rs = np.random.RandomState(seed=1996)
 src_labels = sorted(glob(f'{SRC_DS_labels}/*.txt'))
 for file in tqdm(src_labels):
     filename = file.split("/")[-1][:-4]
-    try:
+    if os.path.isfile(f'{SRC_DS_images}/{filename}.JPG'):
         img = cv2.imread(f'{SRC_DS_images}/{filename}.JPG')
-    except:
+    elif os.path.isfile(f'{SRC_DS_images}/{filename}.jpg'):
         img = cv2.imread(f'{SRC_DS_images}/{filename}.jpg')
+    elif os.path.isfile(f'{SRC_DS_images}/{filename}.jpeg'):
+        img = cv2.imread(f'{SRC_DS_images}/{filename}.jpeg')
+    elif os.path.isfile(f'{SRC_DS_images}/{filename}.png'):
+        img = cv2.imread(f'{SRC_DS_images}/{filename}.png')
+    else:
+        print("Error reading file")
+        sys.exit(1)
+            
     img_h, img_w, _ = img.shape
 
     with open(file) as f:
@@ -96,7 +105,10 @@ for file in tqdm(src_labels):
     if len(lines) == 0:
         continue
 
+    is_visited = np.zeros(len(lines))
     for i, line in enumerate(lines):
+        if is_visited[i] == 1:
+            continue
         x_c, y_c, box_w, box_h = line[0]*img_w, line[1]*img_h, line[2]*img_w, line[3]*img_h
 
         cur_tile_size = min(TILE_SIZE, min(img_h, img_w))
@@ -108,6 +120,6 @@ for file in tqdm(src_labels):
         cv2.imwrite(f'{DST_DS}/images/{filename}_{i}.JPG', img_window)
     
         with open(f'{DST_DS}/labels/{filename}_{i}.txt', 'w+') as f:
-            new_labels = transform_labels(x1, x2, y1, y2, lines, img_w, img_h)
+            new_labels = transform_labels(x1, x2, y1, y2, lines, img_w, img_h, is_visited)
             for new_label in new_labels:
                 f.write("0 " + " ".join(map(str, new_label)) + '\n')
