@@ -13,20 +13,6 @@ OFFSET = 10
 TILE_SIZE = 960
 FINAL_SIZE = 640
 
-# SRC_DS_labels = 'downloaded_datasets/broken-glass-insulator.v9i.yolov8/labels'
-# SRC_DS_images = 'downloaded_datasets/broken-glass-insulator.v9i.yolov8/images'
-# DST_DS = 'clean_ds/broken_glass_insulator640'
-# OFFSET = 50
-# TILE_SIZE = 500
-# FINAL_SIZE = 640
-
-# SRC_DS_labels = 'innopolis-high-voltage-challenge'
-# SRC_DS_images = 'innopolis-high-voltage-challenge'
-# DST_DS = 'clean_ds/innopolis640'
-# OFFSET = 300
-# TILE_SIZE = 1000
-# FINAL_SIZE = 640
-
 ## sample slice coordinates given some label position
 ## make sure coordinates are within image size
 def sample_slice_position(rs, orig_x, orig_y, slice_width, slice_height, img_w, img_h, random_offset):

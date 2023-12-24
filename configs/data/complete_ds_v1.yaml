@@ -1,6 +1,0 @@
-train: /home/ekaziak1/datasets/complete_ds/v1/train/images
-val: /home/ekaziak1/datasets/complete_ds/v1/valid/images
-test: ''
-
-nc: 1
-names: ['lost_glass']
