@@ -7,7 +7,7 @@ class Config:
     model = 'yolov8x'
     weights = os.path.join(
         'models', 'yolov8x_best',
-        'weights', 'model.pt'
+        'weights', 'best.pt'
     )
 
     # inference params
