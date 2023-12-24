@@ -3,9 +3,11 @@
 Team members: Edgar Kaziakhmedov, Denis Koposov  
 Team name: NeuroEye
 
-Source code containing part for data manipulation is in **scripts** folder.  
+## Preface
 
-### Virtual environment and package dependencies
+The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create an algorithm capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.
+
+## Installation
 
 Install virtuenv package for python:
 ```sh
@@ -23,17 +25,17 @@ Install required python packages:
 pip3 install -r requirements.txt
 ```
 
-### Model weights
+## Model weights
 
-[Download](https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQC2RS2wiYdlCJ3f/view?usp=sharing) model weights from Google Drive and move the unzipped folder to the same directory where your source code is located.
+Download [the model weights]((https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQC2RS2wiYdlCJ3f/view?usp=sharing)) from Google Drive and move the unzipped folder **models** to the same directory as your source code.
 
-## Preface and objective
-
-The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create an algorithm capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.
-
-## Approach
+## Solution
 
 We trained YoloV8x and did this and that (mention tile approach if it works out)
+
+## Evaluation
+
+show how to run
 
 ## Data collection
 
@@ -44,3 +46,4 @@ The most important part is data collection. We gathered data from many sources (
 - images from shutterstock - 50 images
 - photos of Moscow power lines - 122 + 233 = 355 images
 - searching with Yandex/Google - 23 images
+show some pics
