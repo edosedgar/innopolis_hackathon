@@ -148,9 +148,9 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
 
 
 if __name__ == "__main__":
-    solution = pd.read_csv("./submissions/solution.csv")
-    if len(sys.argv) == 2 and sys.argv[1]:
-        submission = pd.read_csv(sys.argv[1])
+    if len(sys.argv) == 3 and sys.argv[1] and sys.argv[2]:
+        solution = pd.read_csv(sys.argv[1])
+        submission = pd.read_csv(sys.argv[2])
     else:
         print("No submission specified")
         sys.exit(1)
