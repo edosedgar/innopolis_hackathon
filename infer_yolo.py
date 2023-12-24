@@ -40,6 +40,8 @@ def parse_args():
                         help='')
     parser.add_argument('--sliced', action='store_true',
                         help='')
+    parser.add_argument('--slice_overlap', type=float, default=0.2,
+                        help='')
     parser.add_argument('--slice_size', type=int, default=640,
                         help='')
     parser.add_argument('--compute_score', action='store_true',
@@ -123,8 +125,8 @@ def inference_sliced(args):
         model_device=device,
         slice_height=args.slice_size,
         slice_width=args.slice_size,
-        overlap_height_ratio=0.2,
-        overlap_width_ratio=0.2,
+        overlap_height_ratio=args.slice_overlap,
+        overlap_width_ratio=args.slice_overlap,
 
         # visualization
         novisual=False,
