@@ -105,20 +105,20 @@ def inference_sliced(args):
     detection_model = AutoDetectionModel.from_pretrained(
         model_type="yolov8",
         model_path=args.weights,
-        device=device
+        device=device,
+        image_size=args.imgsz,
+        confidence_threshold=args.conf,
     )
 
     test_data_name = os.path.basename(args.test_data.rstrip('/'))
-    name = f'{args.model}_{test_data_name}_r{args.imgsz}_t{args.conf}_sl'
+    name = f'{args.model}_{test_data_name}_r{args.imgsz}_t{args.conf}_sliced'
     results = sahi_predict(
         source=args.test_data,
         project=args.output_dir,
         name=name,
 
-        image_size=args.imgsz,
-
-        model_confidence_threshold=args.conf,
-        postprocess_match_metric="IOU", # "IOS" is default
+        postprocess_match_metric="IOU",
+        # postprocess_match_metric="IOS",
         postprocess_match_threshold=args.iou,
 
         detection_model=detection_model,
