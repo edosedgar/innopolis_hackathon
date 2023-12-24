@@ -6,6 +6,7 @@ import glob
 import pickle
 import argparse
 import pandas as pd
+import shutil
 
 import torch
 
@@ -45,7 +46,7 @@ def parse_args():
     parser.add_argument('--compute_score', action='store_true',
                         help='')
     parser.add_argument('--target_csv', type=str,
-                        default='./data/solution_manual_v1.csv',
+                        default='~/datasets/test_public_v2/manual.csv',
                         help='')
     
     args = parser.parse_args()
@@ -62,6 +63,12 @@ def inference(args):
 
     test_data_name = os.path.basename(args.test_data.rstrip('/'))
     name = f'{args.model}_{test_data_name}_r{args.imgsz}_t{args.conf}'
+
+    ## ultralytics library appends to txt, instead of overwriting
+    if os.path.isdir(f'{args.output_dir}/{name}/labels/'):
+        for filename in os.listdir(f'{args.output_dir}/{name}/labels/'):
+            os.unlink(f'{args.output_dir}/{name}/labels/{filename}')
+
     results = model.predict(
         source=args.test_data,
         project=args.output_dir,
@@ -82,6 +89,7 @@ def inference(args):
         show_labels=False,
         show_conf=True,
         show_boxes=True,
+        line_width=1,
 
         save=True,
         save_txt=True,
@@ -103,7 +111,7 @@ def inference_sliced(args):
     )
 
     test_data_name = os.path.basename(args.test_data.rstrip('/'))
-    name = f'{args.model}_{test_data_name}_r{args.imgsz}_t{args.conf}'
+    name = f'{args.model}_{test_data_name}_r{args.imgsz}_t{args.conf}_sl'
     results = sahi_predict(
         source=args.test_data,
         project=args.output_dir,
@@ -127,6 +135,7 @@ def inference_sliced(args):
         visual_hide_conf=False,
         visual_hide_labels=True,
         visual_export_format='jpg',
+        visual_bbox_thickness=1,
         
         # other
         verbose=1,
@@ -182,7 +191,7 @@ def save_submission(results, args, target_csv=None):
 
     os.makedirs(args.csv_dir, exist_ok=True)
     df.to_csv(os.path.join(args.csv_dir, f'{name}.csv'), index=False)
-    df.to_csv(os.path.join(args.csv_dir, 'NeuroEye.csv'), index=False)    
+    df.to_csv(os.path.join(args.csv_dir, 'NeuroEye.csv'), index=False)
     return submission_path
 
 
@@ -200,7 +209,7 @@ if __name__ == "__main__":
 
     # compute approximate score
     if args.compute_score:
-        print("Score:", score(
+        print("Score (map50):", score(
             pd.read_csv(args.target_csv),
             pd.read_csv(submission_path),
             row_id_column_name='file_name'
