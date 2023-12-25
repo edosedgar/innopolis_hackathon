@@ -5,7 +5,14 @@ Team members: Edgar Kaziakhmedov, Denis Koposov
 
 ## Introduction
 
-The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create an algorithm capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.
+The reliability of electrical networks depends on the presence and condition of insulators. The objective is to create an algorithm capable of automatically detecting cases where the glass insulator is missing in the strings of disc-type insulators based on RGB images.  
+
+In the course of this competition, we:
+* Gathered a new dataset featuring instances of power towers with absent glass insulators, and pre-processed it to meet our needs
+* Manually labeled the dataset to precisely mark the locations of missing insulation using bounding boxes
+* Created a detection algorithm employing a fully supervised end-to-end approach
+* Evaluated our solution on unseen data to validate its effectiveness
+* Modified the suggested pipeline to cater to high-resolution images captured on UAVs
 
 ## Installation
 
