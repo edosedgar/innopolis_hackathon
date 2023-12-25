@@ -52,7 +52,7 @@ We test different post-processing parameters for tile detection to obtain the mo
 | 2 | conf=0.7, PPMM=IOU, PPMT=0.5, PPT=GREEDYNMM | 0.887 | 0.915 |
 | 3 | conf=0.5, PPMM=IOS, PPMT=0.7, PPT=NMS | 0.905 | 0.821 |
 | 4 | conf=0.7, PPMT=IOS, PPMT=0.7, PPT=NMM | 0.875 | 0.913 |
-| 5 | conf=0.5, PPMT=IOS, PPMT=0.7, PPT=NMM, PS=0.1 | **0.905** | **0.938** |
+| **5** | **conf=0.5, PPMT=IOS, PPMT=0.7, PPT=NMM, PS=0.1** | **0.905** | **0.938** |
 
 Note: mAP50 is computed over test set, PPMM - post-process match metric, PPMT - post-process match threshold, PPT - post-process type, conf - initial confidence threshold, PS - bounding box post-shrink factor
 
