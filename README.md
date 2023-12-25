@@ -76,7 +76,7 @@ We summarize dataset information after pre-processing in the table below:
 
 |   | dataset | images | examples |
 |:-:|--:|:-:|:-:|
-| 1 | [Broken-glass-insulator](https://universe.roboflow.com/deep-learning-wpmkc/broken-glass-insulator) | 49 | <img src="./images/52a3_jpg.rf.765d5a3259f26408e1ce6f029ba8ff45_0.JPG" width=50% height=50%> <img src="./images/8a2_jpg.rf.5f85bb3d046c3e6d991cd78ea76cea7c_0.JPG" width=50% height=50%> |
+| 1 | [Broken-glass-insulator](https://universe.roboflow.com/deep-learning-wpmkc/broken-glass-insulator) | 49 | <img src="./images/52a3_jpg.rf.765d5a3259f26408e1ce6f029ba8ff45_0.JPG" width=30% > <img src="./images/8a2_jpg.rf.5f85bb3d046c3e6d991cd78ea76cea7c_0.JPG" width=30% > |
 | 2 | [cach-dien-thuy](https://universe.roboflow.com/osu/cach-dien-thuy) + [su110kv_broken-sgwz3](https://universe.roboflow.com/osu/su110kv_broken-sgwz3) | 247 | 0.915 |
 | 3 | [insulator-defect-detection](https://datasetninja.com/insulator-defect-detection#download) | 23 | 0.821 |
 | 4 | Testing data (only first 36 images) | 55 | 0.913 |
