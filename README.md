@@ -31,8 +31,11 @@ Download [the model weights](https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQ
 
 ## Solution
 
-In order to solve the problem, we use off-the-shelf YOLOv8x architecture, initially pre-trained and subsequently fine-tuned on our specific dataset, which consists of a single class. Network is trained on images size of 640x640 which are subjected to a range of augmentations to enhance model robustness.  
-Throughout the training process,we configure a batch size of 16, utilizing gradient accumulation to effectively achieve a batch size equivalent to 64. For a comprehensive list of hyper-parameters employed in the training, please refer to [config file](configs/train/yolov8x_adamw_best.yaml).
+In order to solve the problem, we employ off-the-shelf YOLOv8x architecture from [Ultralytics](https://docs.ultralytics.com/), initially pre-trained and subsequently fine-tuned on our specific dataset, which consists of a single class. Network is trained on images size of 640x640 which are subjected to a range of augmentations to enhance model robustness.  
+
+Throughout the training process,we configure a batch size of 16, utilizing gradient accumulation to effectively achieve a batch size equivalent to 64. For a comprehensive list of hyper-parameters employed in the training, please refer to [config file](configs/train/yolov8x_adamw_best.yaml).  
+
+For evaluation, we utilize [SAHI tiled inference library](https://docs.ultralytics.com/guides/sahi-tiled-inference/#introduction-to-sahi) designed to enhance the detection performance, especially for small objects. The tiled inference process involves partitioning images into tiles of 640x640 with a specified overlapping factor. Predictions from each tile are subsequently post-processed to merge overlapping boxes and eliminate extraneous detections.
 
 ## Evaluation
 
