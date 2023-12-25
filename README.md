@@ -77,10 +77,10 @@ We summarize dataset information after pre-processing in the table below:
 |   | dataset | images | examples |
 |:-:|--:|:-:|:-:|
 | 1 | [Broken-glass-insulator](https://universe.roboflow.com/deep-learning-wpmkc/broken-glass-insulator) | 49 | <img src="./images/52a3_jpg.rf.765d5a3259f26408e1ce6f029ba8ff45_0.JPG" width=40% > <img src="./images/8a2_jpg.rf.5f85bb3d046c3e6d991cd78ea76cea7c_0.JPG" width=40% > |
-| 2 | [cach-dien-thuy](https://universe.roboflow.com/osu/cach-dien-thuy) + [su110kv_broken-sgwz3](https://universe.roboflow.com/osu/su110kv_broken-sgwz3) | 247 | 0.915 |
-| 3 | [insulator-defect-detection](https://datasetninja.com/insulator-defect-detection#download) | 23 | 0.821 |
-| 4 | Testing data (only first 36 images) | 55 | 0.913 |
-| 5 | ShutterStock.com | 50 | 0.938 |
-| 6 | Searching with Yandex/Google | 23 | 0.938 |
-| 7 | Images of Moscow power lines | 355 | 0.938 |
+| 2 | [cach-dien-thuy](https://universe.roboflow.com/osu/cach-dien-thuy) + [su110kv_broken-sgwz3](https://universe.roboflow.com/osu/su110kv_broken-sgwz3) | 247 | <img src="./images/Su-kep-vo-10-2-_jpg.rf.eeb018c90db435a32bdb5ba5a67c218d.jpg" width=40% > <img src="./images/su110kv_vo-563-_jpg.rf.c38a29e984f82838ee795a6fbc6ffd6d.jpg" width=40% > |
+| 3 | [insulator-defect-detection](https://datasetninja.com/insulator-defect-detection#download) | 23 | <img src="./images/150394_0.JPG" width=40% > <img src="./images/170128_1.JPG" width=40% > |
+| 4 | Testing data (only first 36 images) | 55 | <img src="./images/DJI_0036_1.JPG" width=40% > <img src="./images/DJI_0057_1.JPG" width=40% > |
+| 5 | ShutterStock.com | 50 | <img src="./images/shutterstock_2386826569_0_3.jpg" width=40% > <img src="./images/shutterstock_2388648951_0_7.jpg" width=40% > |
+| 6 | Searching with Yandex/Google | 23 | <img src="./images/0007_0.JPG" width=40% > <img src="./images/0009_0.JPG" width=40% > |
+| 7 | Images of Moscow power lines | 355 | <img src="./images/IMG_1826_0.JPG" width=40% > <img src="./images/IMG_20231223_133500_0.JPG" width=40% > |
 |   | Total | **802** | |
