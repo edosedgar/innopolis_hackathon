@@ -1,7 +1,7 @@
 # Disc-type glass insulators absence detection
 
-Team name: NeuroEye
-Team members: Edgar Kaziakhmedov, Denis Koposov  
+Team name: NeuroEye  
+Team members: Edgar Kaziakhmedov, Denis Koposov
 
 ## Introduction
 
