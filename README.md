@@ -96,7 +96,7 @@ To prepare dataset for training, we divide all images into tiles of sizes 640x64
 We summarize dataset information after pre-processing in the table below:
 
 |   | dataset | images | examples |
-|:-:|--:|:-:|:-:|
+|:-:|:--:|:-:|:-:|
 | 1 | [Broken-glass-insulator](https://universe.roboflow.com/deep-learning-wpmkc/broken-glass-insulator) | 49 | <img src="./images/52a3_jpg.rf.765d5a3259f26408e1ce6f029ba8ff45_0.JPG" width=40% > <img src="./images/8a2_jpg.rf.5f85bb3d046c3e6d991cd78ea76cea7c_0.JPG" width=40% > |
 | 2 | [cach-dien-thuy](https://universe.roboflow.com/osu/cach-dien-thuy) + [su110kv_broken-sgwz3](https://universe.roboflow.com/osu/su110kv_broken-sgwz3) | 247 | <img src="./images/Su-kep-vo-10-2-_jpg.rf.eeb018c90db435a32bdb5ba5a67c218d.jpg" width=40% > <img src="./images/su110kv_vo-563-_jpg.rf.c38a29e984f82838ee795a6fbc6ffd6d.jpg" width=40% > |
 | 3 | [insulator-defect-detection](https://datasetninja.com/insulator-defect-detection#download) | 23 | <img src="./images/150394_0.JPG" width=40% > <img src="./images/170128_1.JPG" width=40% > |
