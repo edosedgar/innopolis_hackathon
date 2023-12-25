@@ -40,7 +40,7 @@ Download [the model weights](https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQ
 
 In order to solve the problem, we employ off-the-shelf YOLOv8x architecture from [Ultralytics](https://docs.ultralytics.com/), initially pre-trained and subsequently fine-tuned on our specific dataset, which consists of a single class. Network is trained on images size of 640x640 which are subjected to a range of augmentations to enhance model robustness.  
 
-Throughout the training process,we configure a batch size of 16, utilizing gradient accumulation to effectively achieve a batch size equivalent to 64. For a comprehensive list of hyper-parameters employed in the training, please refer to [config file](configs/train/yolov8x_adamw_best.yaml).  
+Throughout the training process, we configure a batch size of 16, utilizing gradient accumulation to effectively achieve a batch size equivalent to 64. For a comprehensive list of hyper-parameters employed in the training, please refer to [config file](configs/train/yolov8x_adamw_best.yaml).  
 
 For evaluation, we utilize [SAHI tiled inference library](https://docs.ultralytics.com/guides/sahi-tiled-inference/#introduction-to-sahi) designed to enhance the detection performance, especially for small objects. The tiled inference process involves partitioning images into tiles of 640x640 with a specified overlapping factor. Predictions from each tile are subsequently post-processed to merge overlapping boxes and eliminate extraneous detections.
 
@@ -51,10 +51,22 @@ We test different post-processing parameters for tile detection to obtain the mo
 | 1 | conf=0.5, PPMM=IOU, PPMT=0.5, PPT=GREEDYNMM | 0.793 | 0.713 |
 | 2 | conf=0.7, PPMM=IOU, PPMT=0.5, PPT=GREEDYNMM | 0.887 | 0.915 |
 | 3 | conf=0.5, PPMM=IOS, PPMT=0.7, PPT=NMS | 0.905 | 0.821 |
-| 4 | conf=0.7, PPMT=IOS, PPMT=0.7, PPT=NMM | 0.875 | 0.913 |
-| 5 | conf=0.5, PPMT=IOS, PPMT=0.7, PPT=NMM, PS=0.1 | **0.905** | **0.938** |
+| 4 | conf=0.7, PPMM=IOS, PPMT=0.7, PPT=NMM | 0.875 | 0.913 |
+| 5 | conf=0.5, PPMM=IOS, PPMT=0.7, PPT=NMM, PS=0.1 | **0.905** | **0.938** |
 
-Notes: mAP50 is computed over test set, PPMM - post-process match metric, PPMT - post-process match threshold, PPT - post-process type, conf - initial confidence threshold, PS - bounding box post-shrink factor
+*Notes*: mAP50 is computed over test set (second set of images in the competition), PPMM - post-process match metric, PPMT - post-process match threshold, PPT - post-process type, conf - initial confidence threshold, PS - bounding box post-shrink factor
+
+#### Post-processing algorithms
+
+- **NMS** - non-maximum suppression (some of the overlapping boxes are eliminated based on the threshold value of IOU)
+- **NMM** - non-maximum merging (overlapping boxes are merged based on the threshold value of IOS)
+
+#### Post-processing metrics
+
+- **IOU** - intersection over union
+- **IOS** - intersection over smaller area (better to handle the case, when one box is inside the other).
+
+### Prediction Examples
 
 Here are a few examples showcasing our prediction results on the test set:
 | <img src="./images/pred/DJI_0039_0.JPG" width=70% > | <img src="./images/pred/DJI_0097_0.JPG" width=70% > |
@@ -69,7 +81,11 @@ To run prediction script on images located in DATA_DIR directory:
 python3 main.py DATA_DIR
 ```
 
-The script produces two folders: **predictions** and **submissions**. In the predictions folder, you'll find images with the generated predictions available for visual inspection. Meanwhile, the submissions folder contains a NeuroEye.csv file where predictions are exported in tabular format.
+The script produces two folders: ```predictions``` and ```submissions```.
+
+In the ```predictions``` folder, you'll find images with the generated predictions available for visual inspection. If the sliced inference is used (which is the case for the final model) the images will be placed inside ```predictions/xxx/visuals/```, where ```xxx``` depends on the inference parameters. In case of full size inference (```--sliced``` is not specified) the images will be placed inside ```predictions/xxx/```. In both cases labels in YOLO format can be found in ```predictions/xxx/labels/```.
+
+```submissions/xxx/``` folder contains a ```NeuroEye.csv``` file where predictions are exported in tabular (CSV) format. Here ```xxx``` is the name of the directory with the provided data.
 
 ## Data collection
 
@@ -87,7 +103,7 @@ We summarize dataset information after pre-processing in the table below:
 | 4 | Testing data (only first 36 images) | 55 | <img src="./images/DJI_0036_1.JPG" width=40% > <img src="./images/DJI_0057_1.JPG" width=40% > |
 | 5 | ShutterStock.com | 50 | <img src="./images/shutterstock_2386826569_0_3.jpg" width=40% > <img src="./images/shutterstock_2388648951_0_7.jpg" width=40% > |
 | 6 | Searching with Yandex/Google | 23 | <img src="./images/0007_0.JPG" width=40% > <img src="./images/0009_0.JPG" width=40% > |
-| 7 | Images of Moscow power lines | 355 | <img src="./images/IMG_1826_0.JPG" width=40% > <img src="./images/IMG_20231223_133500_0.JPG" width=40% > |
+| 7 | Images of Moscow power lines (manually collected in Moscow on Dec 23 2023) | 355 | <img src="./images/IMG_1826_0.JPG" width=40% > <img src="./images/IMG_20231223_133500_0.JPG" width=40% > |
 |   | Total | **802** | |
 
 After consolidating the data, we perform a shuffle of the images and then proceed to split them into an 80/20 ratio for training and validation, respectively. Notably, we designate the most recent testing set from Kaggle as our independent test set — distinct from the one detailed in the table above. This dataset is available for download [from Google Drive](https://drive.google.com/file/d/1-_A4Oi-Hg6dT4y6uSZLk7ey-zfJKPOVm/view?usp=sharing).
