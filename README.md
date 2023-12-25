@@ -31,7 +31,8 @@ Download [the model weights](https://drive.google.com/file/d/1gweLmrbDAfyAiRBXGQ
 
 ## Solution
 
-We trained YoloV8x and did this and that (mention tile approach if it works out)
+In order to solve the problem, we use off-the-shelf YOLOv8x architecture, initially pre-trained and subsequently fine-tuned on our specific dataset, which consists of a single class. Network is trained on images size of 640x640 which are subjected to a range of augmentations to enhance model robustness.  
+Throughout the training process,we configure a batch size of 16, utilizing gradient accumulation to effectively achieve a batch size equivalent to 64. For a comprehensive list of hyper-parameters employed in the training, please refer to [config file](configs/train/yolov8x_adamw_best.yaml).
 
 ## Evaluation
 
