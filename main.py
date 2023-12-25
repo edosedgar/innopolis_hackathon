@@ -12,7 +12,7 @@ class Config:
 
     # inference params
     iou = 0.7
-    conf = 0.7
+    conf = 0.3
     imgsz = 4000
 
     # sliced inference
