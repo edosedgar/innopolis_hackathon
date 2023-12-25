@@ -54,7 +54,7 @@ We test different post-processing parameters for tile detection to obtain the mo
 | 4 | conf=0.7, PPMT=IOS, PPMT=0.7, PPT=NMM | 0.875 | 0.913 |
 | 5 | conf=0.5, PPMT=IOS, PPMT=0.7, PPT=NMM, PS=0.1 | **0.905** | **0.938** |
 
-Note: mAP50 is computed over test set, PPMM - post-process match metric, PPMT - post-process match threshold, PPT - post-process type, conf - initial confidence threshold, PS - bounding box post-shrink factor
+Notes: mAP50 is computed over test set, PPMM - post-process match metric, PPMT - post-process match threshold, PPT - post-process type, conf - initial confidence threshold, PS - bounding box post-shrink factor
 
 ## Evaluation
 
@@ -65,14 +65,22 @@ python3 main.py DATA_DIR
 ```
 
 The script produces two folders: **predictions** and **submissions**. In the predictions folder, you'll find images with the generated predictions available for visual inspection. Meanwhile, the submissions folder contains a NeuroEye.csv file where predictions are exported in tabular format.
+
 ## Data collection
 
-TBD
-The most important part is data collection. We gathered data from many sources (list them) and did this and that.
-- [broken glass insulator](https://universe.roboflow.com/deep-learning-wpmkc/broken-glass-insulator) - 49 images
-- [cach-dien-thuy](https://universe.roboflow.com/osu/cach-dien-thuy) + [su110kv_broken-sgwz3](https://universe.roboflow.com/osu/su110kv_broken-sgwz3) - 247 images
-- [insulator-defect-detection](https://datasetninja.com/insulator-defect-detection#download) - 23 images
-- images from shutterstock - 50 images
-- photos of Moscow power lines - 122 + 233 = 355 images
-- searching with Yandex/Google - 23 images
-show some pics
+The most labor-intensive and crucial phase involves data collection. We compile images of faulty insulators from diverse sources, closely inspecting each one to ensure quality standards and manually adding annotations. For source #5, due to limited access to imagestock data, we expand the dataset by artificially introducing defects using the content-aware fill tool in Photoshop, it helps significantly increase source diversity. 
+
+To prepare dataset for training, we divide all images into tiles of sizes 640x640, 1000x1000, and 1200x1200, ensuring each tile contains at least one object of interest. Finally, all tiles are resized to 640x640.  Additionally, to minimize false positives, we incorporate background images into the dataset. 
+
+We summarize dataset information after pre-processing in the table below:
+
+|   | dataset | images | examples |
+|:-:|--:|:-:|:-:|
+| 1 | [Broken-glass-insulator](https://universe.roboflow.com/deep-learning-wpmkc/broken-glass-insulator) | 49 | ![](./images/52a3_jpg.rf.765d5a3259f26408e1ce6f029ba8ff45_0.JPG){width=50% height=50%} ![](./images/8a2_jpg.rf.5f85bb3d046c3e6d991cd78ea76cea7c_0.JPG){width=50% height=50%} |
+| 2 | [cach-dien-thuy](https://universe.roboflow.com/osu/cach-dien-thuy) + [su110kv_broken-sgwz3](https://universe.roboflow.com/osu/su110kv_broken-sgwz3) | 247 | 0.915 |
+| 3 | [insulator-defect-detection](https://datasetninja.com/insulator-defect-detection#download) | 23 | 0.821 |
+| 4 | Testing data (only first 36 images) | 55 | 0.913 |
+| 5 | ShutterStock.com | 50 | 0.938 |
+| 6 | Searching with Yandex/Google | 23 | 0.938 |
+| 7 | Images of Moscow power lines | 355 | 0.938 |
+|   | Total | **802** | |
