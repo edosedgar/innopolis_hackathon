@@ -56,7 +56,7 @@ We test different post-processing parameters for tile detection to obtain the mo
 
 Notes: mAP50 is computed over test set, PPMM - post-process match metric, PPMT - post-process match threshold, PPT - post-process type, conf - initial confidence threshold, PS - bounding box post-shrink factor
 
-Here are a few examples showcasing our prediction results:
+Here are a few examples showcasing our prediction results on the test set:
 | <img src="./images/pred/DJI_0039_0.JPG" width=70% > | <img src="./images/pred/DJI_0097_0.JPG" width=70% > |
 |:-:|:--:|
 | <img src="./images/pred/DJI_0098_1.JPG" width=70% > | <img src="./images/pred/DJI_0103_0.JPG" width=70% > |
