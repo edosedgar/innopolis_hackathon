@@ -44,12 +44,30 @@ Throughout the training process,we configure a batch size of 16, utilizing gradi
 
 For evaluation, we utilize [SAHI tiled inference library](https://docs.ultralytics.com/guides/sahi-tiled-inference/#introduction-to-sahi) designed to enhance the detection performance, especially for small objects. The tiled inference process involves partitioning images into tiles of 640x640 with a specified overlapping factor. Predictions from each tile are subsequently post-processed to merge overlapping boxes and eliminate extraneous detections.
 
+We test different post-processing parameters for tile detection to obtain the most visually convincing results. Below, we present some outcomes to highlight the significance of these parameters:
+
+|   | parameters | mAP50, soft | mAP50, hard |
+|:-:|--:|:-:|:-:|
+| 1 | conf=0.5, PPMM=IOU, PPMT=0.5, PPT=GREEDYNMM | 0.793 | 0.713 |
+| 2 | conf=0.7, PPMM=IOU, PPMT=0.5, PPT=GREEDYNMM | 0.887 | 0.915 |
+| 3 | conf=0.5, PPMM=IOS, PPMT=0.7, PPT=NMS | 0.905 | 0.821 |
+| 4 | conf=0.7, PPMT=IOS, PPMT=0.7, PPT=NMM | 0.875 | 0.913 |
+| 5 | conf=0.5, PPMT=IOS, PPMT=0.7, PPT=NMM, PS=0.1 | 0.905 | 0.938 |
+
+Note: mAP50 is computed over test set, PPMM - post-process match metric, PPMT - post-process match threshold, PPT - post-process type, conf - initial confidence threshold, PS - bounding box post-shrink factor
+
 ## Evaluation
 
-show how to run
+To run prediction script on images located in DATA_DIR directory:
 
+```sh
+python3 main.py DATA_DIR
+```
+
+The script produces two folders: **predictions** and **submissions**. In the predictions folder, you'll find images with the generated predictions available for visual inspection. Meanwhile, the submissions folder contains a NeuroEye.csv file where predictions are exported in tabular format.
 ## Data collection
 
+TBD
 The most important part is data collection. We gathered data from many sources (list them) and did this and that.
 - [broken glass insulator](https://universe.roboflow.com/deep-learning-wpmkc/broken-glass-insulator) - 49 images
 - [cach-dien-thuy](https://universe.roboflow.com/osu/cach-dien-thuy) + [su110kv_broken-sgwz3](https://universe.roboflow.com/osu/su110kv_broken-sgwz3) - 247 images
