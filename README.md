@@ -85,6 +85,6 @@ We summarize dataset information after pre-processing in the table below:
 | 7 | Images of Moscow power lines | 355 | <img src="./images/IMG_1826_0.JPG" width=40% > <img src="./images/IMG_20231223_133500_0.JPG" width=40% > |
 |   | Total | **802** | |
 
-After consolidating the data, we perform a shuffle of the images and then proceed to split them into an 80/20 ratio for training and validation, respectively. Notably, we designate the most recent testing set from Kaggle as our independent test set — distinct from the one detailed in the table above.
+After consolidating the data, we perform a shuffle of the images and then proceed to split them into an 80/20 ratio for training and validation, respectively. Notably, we designate the most recent testing set from Kaggle as our independent test set — distinct from the one detailed in the table above. This dataset is available for download [from Google Drive](https://drive.google.com/file/d/1-_A4Oi-Hg6dT4y6uSZLk7ey-zfJKPOVm/view?usp=sharing).
 
 We acknowledge a limitation in the dataset. Primarily composed of images captured from a bottom-up perspective, it may not seamlessly generalize to top-down angles typically encountered in UAV imagery
